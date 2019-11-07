@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <h1>测试一下</h1>
+    <button id="btConnect">连接到WS服务器</button>
+    <button id="btSendAndReceive">向WS服务器发消息并接收消息</button>
+    <button id="btClose">断开与WS服务器的连接</button>
+    <div id="val"></div>
+    <script>
+
+        var wsClient = null; //WS客户端对象
+
+        btConnect.onclick = function(){
+            //连接到WS服务器，注意：协议名不是http！
+            wsClient = new WebSocket('ws://47.98.247.78:8282');
+            //wsClient = new WebSocket('ws://116.62.210.102:17820');
+            wsClient.onopen = function(){
+                console.log('WS客户端已经成功连接到服务器上')
+            }
+        }
+
+        btSendAndReceive.onclick = function(){
+            //向WS服务器发送一个消息
+            wsClient.send('Hello Server');
+            //接收WS服务器返回的消息
+            wsClient.onmessage = function(e){
+                console.log('WS客户端接收到一个服务器的消息：'+ e.data);
+                val.innerHTML=e.data;
+            }
+
+
+        }
+
+        btClose.onclick = function(){
+            //断开到WS服务器的连接
+            wsClient.close();  //向服务器发消息，主动断开连接
+            wsClient.onclose = function(){
+                //经过客户端和服务器的四次挥手后，二者的连接断开了
+                console.log('到服务器的连接已经断开')
+            }
+        }
+
+        /*var ws = new WebSocket('ws://116.62.210.102:17820');
+
+        var head_str = "13030111111111111111112019010210380199999911111111111111111111111111111111111111111100076EB002190101000000000000010000";
+
+        var body_str = "1&&0101000000000025&王土&46&1&120325197106195676&wangtu@123.com&3&1&123123&&&&";
+
+        ws.onopen = function (msg) {
+            console.log("WebSocket opened!")
+            ws.send({'res':head_str+body_str});
+        }
+
+        ws.onmessage = function(evt)
+        {
+            console.log(evt.data);
+        }
+
+        ws.onclose = function(evt)
+        {
+            console.log("WebSocketClosed!");
+        }
+
+        ws.onerror = function(evt)
+        {
+            console.log("WebSocketError!");
+        }
+
+        ws.close()*/
+
+    </script>
+</body>
+</html>

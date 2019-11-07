@@ -1,0 +1,9 @@
+<foreach name="list" item="v">
+    <ul>
+        <!-- <li class="li1"><span>{$v[id]}</span></li> -->
+        <li class="li2"><span>{:date('Y-m-d', $v[create_time])}</span></li>
+        <li class="li1"><span>{$v[type]==1?'出金':'入金'}</span></li>
+        <li class="li1"><span>{$v[money]}</span></li>
+        <li class="li1"><span>{$v[serial_num]}</span></li>
+    </ul>
+</foreach>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>个人信息</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="__ROOT__/Public/static/js/layer/laydate/laydate.js"></script>
+	</head>
+	<body class="bg-f5">
+	<include file="user/header"/>
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>身份验证</span>
+			    </div>
+			    <div class="home-main">
+					<include file="user/menu"/>
+			    	<div class="ri-menu fr">
+						<div class="menumain p">
+							<div class="goodpiece">
+								<h1>身份验证</h1>
+								<!--<a href=""><span class="co_blue">帮助</span></a>-->
+							</div>
+							<div class="personerinfro">
+								<form action="" method="post">
+									<ul class="name_jz"><li class="infor_wi_le"><a href="javascript:void(0);"></a></li></ul>
+									<ul class="name_jz"><li class="infor_wi_le"><a href="javascript:void(0);"></a></li></ul>
+									<ul class="name_jz"><li class="infor_wi_le"><a href="javascript:void(0);"></a></li></ul>
+									<ul class="name_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">验证类型：</a></li>
+										<li><a href="javascript:void(0);">
+
+											<select class="name_zjxs" name="cardtype">
+												<option>--请选择--</option>
+												<option value="1" {$user['cardtype'] == 1 ? 'selected' : ''}>身份证</option>
+												<option value="2" {$user['cardtype'] == 2 ? 'selected' : ''}>军人军官证</option>
+												<option value="3" {$user['cardtype'] == 3 ? 'selected' : ''}>港澳台居民通行证</option>
+												<option value="4" {$user['cardtype'] == 4 ? 'selected' : ''}>中国护照</option>
+												<option value="8" {$user['cardtype'] == 8 ? 'selected' : ''}>武警警官证</option>
+											</select>
+										</a></li>
+									</ul>
+									<ul class="name_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">真实姓名：</a></li>
+										<li><a href="javascript:void(0);">
+											<input class="name_zjxs" type="text" name="name" value="{$user.name}" />
+										</a></li>
+									</ul>
+									<ul class="name_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">证件号码：</a></li>
+										<li><a href="javascript:void(0);">
+											<input class="name_zjxs" type="text" name="idcard" value="{$user.idcard}" />
+										</a></li>
+									</ul>
+
+									<ul class="hobby_jz">
+										<li class="infor_wi_le"></li>
+										<li class="infor_wi_ri">
+											<div class="save_s">
+												<input class="save" type="submit" id="" name="" value="确认保存" />
+											</div>
+										</li>
+									</ul>
+								</form>
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+		<!--footer-s-->
+		<div class="footer p"><include file="public/footer" /> </div>
+		<!--footer-e-->
+	<script>$(document).ready(function(){ $('#birthday').layDate();});</script>
+
+	</body>
+</html>
