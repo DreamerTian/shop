@@ -468,7 +468,7 @@ class UsersLogic extends Model
         }
 
         //把拍卖所的也注册了
-        $url = "http://www.paimai.com/index.php/login/register";
+        $url = "http://paimai.jzwhsc.com/index.php/login/register";
         $post_data['registerType'] = 'mobile';
         $post_data['mobile'] = $username;
         $post_data['pwd'] = $password;
