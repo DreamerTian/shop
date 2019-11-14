@@ -1,0 +1,138 @@
+<include file="public/layout"/>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商城设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="group_list" item="v" key="k">
+                    <li><a href="{:U('System/index',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>系统设置信用积分，开启或者关闭</li>
+        </ul>
+    </div>
+    <form method="post" id="handlepost" action="{:U('System/handle')}">
+        <input type="hidden" name="inc_type" value="{$inc_type}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">启用信用钱包</dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="regis_smtp_enable1" class="cb-enable <if condition='$config[credit_score_enable] eq 1'>selected</if>">开启</label>
+                        <label for="regis_smtp_enable0" class="cb-disable <if condition='$config[credit_score_enable] eq 0'>selected</if>">关闭</label>
+                        <input id="regis_smtp_enable1" name="credit_score_enable" <if condition="$config['credit_score_enable'] eq 1">checked="checked"</if> value="1" type="radio">
+                        <input id="regis_smtp_enable0" name="credit_score_enable" <if condition="$config['credit_score_enable'] eq 0">checked="checked"</if> value="0" type="radio">
+                    </div>
+                    <p class="notic">用户是否可以使用信用钱包</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="initial_gave">初始给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="initial_gave" name="initial_gave" value="{$config.initial_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户注册初始给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="email_gave">绑定邮箱给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="email_gave" name="email_gave" value="{$config.email_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户绑定邮箱给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="real_name_gave">实名认证给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="real_name_gave" name="real_name_gave" value="{$config.real_name_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户实名认证给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="binding_bank_gave">绑定银行卡给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="binding_bank_gave" name="binding_bank_gave" value="{$config.binding_bank_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户绑定银行卡给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="sync_to_gold_gave">账号同步到金网给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="sync_to_gold_gave" name="sync_to_gold_gave" value="{$config.sync_to_gold_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户账号同步到金网给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="sync_to_pm_gave">账号同步到拍卖给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="sync_to_pm_gave" name="sync_to_pm_gave" value="{$config.sync_to_pm_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户账号同步到拍卖给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="binding_qq_gave">绑定QQ给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="binding_qq_gave" name="binding_qq_gave" value="{$config.binding_qq_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户账号绑定QQ给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="binding_wx_gave">绑定微信给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="binding_wx_gave" name="binding_wx_gave" value="{$config.binding_wx_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户账号绑定微信给予多少信用积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="binding_alipay_gave">绑定支付宝给予</label>
+                </dt>
+                <dd class="opt">
+                    <input id="binding_alipay_gave" name="binding_alipay_gave" value="{$config.binding_alipay_gave}" class="input-txt" type="text"/>
+                    <p class="notic">用户账号绑定微信给予多少信用积分</p>
+                </dd>
+            </dl>
+            <div class="bot"><a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit();">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<div id="goTop"><a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+<script>
+    var flag = true;
+    function adsubmit(){
+        if(flag){
+            $('#handlepost').submit();
+        }
+    }
+</script>
+</body>
+</html>

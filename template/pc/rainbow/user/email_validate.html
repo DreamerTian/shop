@@ -95,12 +95,12 @@
                                                         <input type="text" class="it-01 verify-ctrl my_chkpwd" value="" name="email" id="new_email">
                                                         <span style="display: block;" class="v-tips verify-tips"> <i class="icon" id="rightTip"></i> <span id="errorEmail" class="txt"></span> </span> </div>
                                                 </li>
-                                                <li> <span class="title">验证码：</span>
+                                                <!--<li> <span class="title">验证码：</span>
                                                     <div class="con verify-group">
                                                         <input type="text" class="msg-code ie-01 verify-ctrl left" name="code" id="new_code">&nbsp;&nbsp;
                                                         <input type="button"  value="获取验证码"  id="btnemailAuthCode2"  onClick="sendCode(this,'new_email')" style="width:150px;"  intervaltime="120"/>
                                                     </div>
-                                                </li>
+                                                </li>-->
                                                 <li>
                                                     <button class="btn_120 verify-ctrl" type="submit"> 确定 </button>
                                                 </li>
@@ -140,11 +140,11 @@
             return false;
         }
 
-        if($.trim($('#new_code').val()) == '')
+        /*if($.trim($('#new_code').val()) == '')
         {
             layer.alert('验证码不能为空', {icon: 2});//alert('验证码不能为空');
             return false;
-        }
+        }*/
         return true;
     }
 

@@ -34,7 +34,7 @@
 				    		<if condition="$step eq 1">
 				    		<div class="personerinfro verifyi">
 				    			<form action="" method="post">
-				    				<ul class="birth_jz">
+				    				<!--<ul class="birth_jz">
 										<li class="infor_wi_le"><a href="javascript:void(0);">请选择验证方式：</a></li>
 										<li>
 											<a href="javascript:void(0);">
@@ -44,7 +44,7 @@
 												</select>
 											</a>
 										</li>
-									</ul>
+									</ul>-->
 									<ul class="name_jz ischecked">
 										<if condition="$user[mobile] neq ''">
 											<li class="infor_wi_le"><a href="javascript:void(0);">已验证手机号码：</a></li>
@@ -54,7 +54,7 @@
 											<li><a href="javascript:void(0);" class="sender">{$user.email}</a></li>
 										</if>
 									</ul>
-									<ul class="name_jz checode">
+									<!--<ul class="name_jz checode">
 										<li class="infor_wi_le"><a href="javascript:void(0);">验证码：</a></li>
 										<li class="teaeu">
 											<a href="javascript:void(0);">
@@ -64,7 +64,7 @@
 												<input class="button_yzm" type="button" name="" onclick="sendcode(this)" value="获取验证码" />
 											</a>
 										</li>
-									</ul>
+									</ul>-->
 									<ul class="hobby_jz">
 										<li class="infor_wi_le"></li>
 										<div class="save_s">
@@ -192,7 +192,7 @@
 	}
 	
 	function nextstep(){
-		var tpcode = $('#tpcode').val();
+		/*var tpcode = $('#tpcode').val();
 		if(tpcode == ''){
 			layer.alert('验证码不能为空', {icon: 2});
 			return false;
@@ -200,12 +200,12 @@
 		if(tpcode.length != 4){
 			layer.alert('验证码错误', {icon: 2});
 			return false;
-		}
+		}*/
 		$.ajax({
 			url:'/index.php?m=Home&c=Api&a=check_validate_code&t='+Math.random(),
 			type:'post',
 			dataType:'json',
-			data:{type:$('#sender').val(),code:tpcode,send:$('#sender').find("option:selected").attr('rel'),scene:6},
+			data:{type:$('#sender').val(),send:$('#sender').find("option:selected").attr('rel'),scene:6},
 			success:function(res){
 				if(res.status==1){
 					is_check = true;

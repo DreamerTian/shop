@@ -906,4 +906,8 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
         }
         $this->ajaxReturn($return);
     }
+
+    /**
+     *
+     * */
 }

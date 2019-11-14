@@ -118,6 +118,43 @@ class User extends Base{
         $this->assign('active','account');
         return $this->fetch();
     }
+
+    /**
+     * 信用额度页面
+     */
+    public function credit()
+    {
+        $user = session('user');
+
+        $type = I('type',1);
+        $logic = new UsersLogic();
+        $data = $logic->get_account_log($this->user_id,$type);
+        $account_log = $data['result'];
+        $this->assign('user',$user);
+        $this->assign('page',$data['show']);
+        $this->assign('account_log',$account_log);
+
+        return $this->fetch();
+    }
+
+    /**
+     *  同步到拍卖所
+     * */
+    public function sync_xy()
+    {
+        $user = session('user');
+
+        $url = "http://paimai.jzwhsc.com/index.php/home/api/sync_xy";
+
+        $data['mobile'] = $user['mobile'];
+        $data['wallet_limsum'] = $user['wallet_limsum'];
+        $data['wallet_limsum_z'] = $user['wallet_limsum_z'];
+
+        $res = httpRequest($url,"POST",$data);
+
+        echo $res;
+    }
+
     /*
      * 优惠券列表
      */
@@ -439,25 +476,36 @@ class User extends Base{
             $email = I('post.email');
             $old_email = I('post.old_email',''); //旧邮箱
             $code = I('post.code');
-            $info = session('validate_code');
+            /*$info = session('validate_code');
             if(!$info)
                 $this->error('非法操作');
             if($info['time']<time()){
             	session('validate_code',null);
             	$this->error('验证超时，请重新验证');
-            }
+            }*/
             //检查原邮箱是否正确
             if($user_info['email_validated'] == 1 && $old_email != $user_info['email'])
                 $this->error('原邮箱匹配错误');
             //验证邮箱和验证码
-            if($info['sender'] == $email && $info['code'] == $code){
+            /*if($info['sender'] == $email && $info['code'] == $code){
                 session('validate_code',null);
                 if(!$userLogic->update_email_mobile($email,$this->user_id))
                     $this->error('邮箱已存在');
                 $this->success('绑定成功',U('Home/User/index'));
                 exit;
+            }*/
+
+            if(!$userLogic->update_email_mobile($email,$this->user_id)){
+                $this->error('邮箱已存在');
             }
-            $this->error('邮箱验证码不匹配');
+
+            if($user_info['email_validated'] != 1 && empty($old_email)){
+                $config = tpCache('credit');
+                accountLog1($this->user_id,0,$config['email_gave'],0,"绑定邮箱赠送信用额度");
+            }
+
+            $this->success('绑定成功',U('Home/User/index'));
+
         }
         $this->assign('user_info',$user_info);
         $this->assign('step',$step);
@@ -756,6 +804,43 @@ class User extends Base{
         $this->assign('lists', $lists);
         return $this->fetch();
     }
+
+    /**
+     *  同步账号
+     * */
+    public function sync_auth()
+    {
+        return $this->fetch();
+    }
+
+
+    /**
+     * 同步账号到拍卖所
+     */
+    public function sync_to_pm()
+    {
+        $param = I('post.');
+
+        $url = "http://paimai.jzwhsc.com/index.php/login/register";
+        $post_data['registerType'] = 'mobile';
+        $post_data['mobile'] = $param['mobile'];
+        $post_data['pwd'] = $param['pwd'];
+        $post_data['pwded'] = $param['pwded'];
+        $post_data['isAgree'] = 1;
+        $result2pm =  httpRequest($url,"POST",$post_data);
+
+        $result2pm_arr = json_decode($result2pm,1);
+        $config = tpCache('credit');
+        if($result2pm_arr['status'] == 1){
+            Db::name('users')->where("user_id", $this->user_id)->update(['sync_to_pm'=>1]);
+            accountLog1($this->user_id,0,$config['sync_to_pm_gave'],0,"会员成功同步到拍卖所赠送信用额度");
+
+            $this->success('账号同步成功');
+        }else{
+            $this->error('账号同步失败');
+        }
+    }
+
 
     public function bind_remove()
     {
@@ -1363,6 +1448,12 @@ class User extends Base{
             if(!$userLogic->update_info($this->user_id,$post))
                 $this->error("保存失败");
             setcookie('uname',urlencode($post['nickname']),null,'/');
+
+            if(empty($user_info['idcard'])){
+                $config = tpCache('credit');
+                accountLog1($this->user_id,0,$config['real_name_gave'],0,"实名认证赠送信用额度");
+            }
+
             $this->success("操作成功");
             exit;
         }

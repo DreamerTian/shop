@@ -40,6 +40,7 @@ class Pay
     private $integralMoney = 0;//积分抵消金额
     private $userMoney = 0;//使用余额
     private $payPoints = 0;//使用积分
+    private $walletLimsum = 0;//使用积分
     private $couponPrice = 0;//优惠券抵消金额
 
     private $orderPromId;//订单优惠ID
@@ -278,6 +279,32 @@ class Pay
     }
 
     /**
+     * 使用信用额度
+     * @throws TpshopException
+     * @param $user_money
+     * @return $this
+     */
+    public function useWalletLimsum($wallet_limsum)
+    {
+        if($wallet_limsum > 0){
+            if($wallet_limsum > $this->user['wallet_limsum']){
+                throw new TpshopException("计算订单价格",0,['status' => -6, 'msg' =>  "你的账户信用额度为:" . $this->user['wallet_limsum'], 'result' => '']);
+            }
+            if($this->orderAmount > 0){
+                if($wallet_limsum > $this->orderAmount){
+                    $this->walletLimsum = $this->orderAmount;
+                    $this->orderAmount = 0;
+                }else{
+                    $this->walletLimsum = $wallet_limsum;
+                    $this->orderAmount = $this->orderAmount - $this->walletLimsum;
+                }
+            }
+        }
+        return $this;
+    }
+
+
+    /**
      * 减去应付金额
      * @param $cut_money
      * @return $this
@@ -400,6 +427,15 @@ class Pay
     }
 
     /**
+     * 获取实际上使用的信用额度
+     * @return int
+     */
+    public function getWalletLimsum()
+    {
+        return $this->walletLimsum;
+    }
+
+    /**
      * 获取订单总价
      * @return int
      */
@@ -505,6 +541,7 @@ class Pay
             'shipping_price' => round($this->shippingPrice, 2),
             'coupon_price' => round($this->couponPrice, 2),
             'user_money' => round($this->userMoney, 2),
+            'wallet_limsum' => round($this->walletLimsum, 2),
             'integral_money' => $this->integralMoney,
             'pay_points' => $this->payPoints,
             'order_amount' => round($this->orderAmount, 2),

@@ -186,7 +186,9 @@ class PlaceOrder
         }
         $pay_points = $this->pay->getPayPoints();
         $user_money = $this->pay->getUserMoney();
-        if ($pay_points || $user_money) {
+        $getWalletLimsum = $this->pay->getWalletLimsum();
+
+        if ($pay_points || $user_money || $getWalletLimsum) {
             $user = $this->pay->getUser();
             if ($user['is_lock'] == 1) {
                 throw new TpshopException('提交订单', 0, ['status' => -5, 'msg' => "账号异常已被锁定，不能使用余额支付！", 'result' => '']);
@@ -242,6 +244,7 @@ class PlaceOrder
             'goods_price' => $this->pay->getGoodsPrice(),//'商品价格',
             'shipping_price' => $this->pay->getShippingPrice(),//'物流价格',
             'user_money' => $this->pay->getUserMoney(),//'使用余额',
+            'wallet_limsum' => $this->pay->getWalletLimsum(),//'使用信用额度',
             'coupon_price' => $this->pay->getCouponPrice(),//'使用优惠券',
             'integral' => $this->pay->getPayPoints(), //'使用积分',
             'integral_money' => $this->pay->getIntegralMoney(),//'使用积分抵多少钱',
@@ -310,6 +313,10 @@ class PlaceOrder
         }
         if ($orderData['integral'] > 0 || $orderData['user_money'] > 0) {
             $orderData['pay_name'] = $orderData['user_money']>0 ? '余额支付' : '积分兑换';//支付方式，可能是余额支付或积分兑换，后面其他支付方式会替换
+        }
+
+        if($orderData['wallet_limsum'] > 0){
+            $orderData['pay_name'] = "信用额度支付";
         }
 
         $this->order->data($orderData, true);
@@ -401,7 +408,7 @@ class PlaceOrder
      */
     public function changUserPointMoney(Order $order)
     {
-        if($this->pay->getPayPoints() > 0 || $this->pay->getUserMoney() > 0){
+        if($this->pay->getPayPoints() > 0 || $this->pay->getUserMoney() > 0 || $this->pay->getWalletLimsum() > 0){
             $user = $this->pay->getUser();
             $user = Users::get($user['user_id']);
             if($this->pay->getPayPoints() > 0){
@@ -410,11 +417,15 @@ class PlaceOrder
             if($this->pay->getUserMoney() > 0){
                 $user->user_money = $user->user_money - $this->pay->getUserMoney();// 抵扣余额
             }
+            if($this->pay->getWalletLimsum() > 0){
+                $user->wallet_limsum = $user->wallet_limsum - $this->pay->getWalletLimsum();// 抵扣信用额度
+            }
             $user->save();
             $accountLogData = [
                 'user_id' => $order['user_id'],
                 'user_money' => -$this->pay->getUserMoney(),
                 'pay_points' => -$this->pay->getPayPoints(),
+                'wallet_limsum' => -$this->pay->getWalletLimsum(),
                 'change_time' => time(),
                 'desc' => '下单消费',
                 'order_sn'=>$order['order_sn'],

@@ -466,7 +466,9 @@ class UsersLogic extends Model
         if($user_id === false){
             return array('status'=>-1,'msg'=>'注册失败');
         }
-
+        //注册成功给予 初始信用额度
+        $config = tpCache('credit');
+        accountLog1($user_id,0,$config['initial_gave'],0,"会员注册成功赠送信用额度");
         //把拍卖所的也注册了
         $url = "http://paimai.jzwhsc.com/index.php/login/register";
         $post_data['registerType'] = 'mobile';
@@ -475,6 +477,13 @@ class UsersLogic extends Model
         $post_data['pwded'] = $password2;
         $post_data['isAgree'] = 1;
         $result2pm =  httpRequest($url,"POST",$post_data);
+
+        $result2pm_arr = json_decode($result2pm,1);
+
+        if($result2pm_arr['status'] == 1){
+            Db::name('users')->where("user_id", $user_id)->update(['sync_to_pm'=>1]);
+            accountLog1($user_id,0,$config['sync_to_pm_gave'],0,"会员注册成功并同步到拍卖所赠送信用额度");
+        }
 
         // 会员注册赠送积分
         $isRegIntegral = tpCache('integral.is_reg_integral');
@@ -493,6 +502,8 @@ class UsersLogic extends Model
         if($pay_points > 0){
             accountLog($user_id, 0,$pay_points, '会员注册赠送积分'); // 记录日志流水
         }
+
+
         $user = Db::name('users')->where("user_id", $user_id)->find();
 
         return array('status'=>1,'msg'=>'注册成功','result'=>$user);
@@ -601,9 +612,9 @@ class UsersLogic extends Model
     public function get_account_log($user_id, $account_type = 0, $order_sn = null){
         $account_log_where = ['user_id'=>$user_id];
         if($account_type == 1){
-            $account_log_where['user_money|pay_points'] = ['gt',0];
+            $account_log_where['user_money|pay_points|wallet_limsum'] = ['gt',0];
         }elseif($account_type == 2){
-            $account_log_where['user_money|pay_points'] = ['lt',0];
+            $account_log_where['user_money|pay_points|wallet_limsum'] = ['lt',0];
         }
         $order_sn && $account_log_where['order_sn'] = $order_sn;
         $count = M('account_log')->where($account_log_where)->count();
@@ -620,6 +631,29 @@ class UsersLogic extends Model
         ];
         return $return;
     }
+
+    public function get_account_log1($user_id, $account_type = 0, $order_sn = null){
+        $account_log_where = ['user_id'=>$user_id];
+        if($account_type == 1){
+            $account_log_where['user_money|pay_points|wallet_limsum'] = ['gt',0];
+        }elseif($account_type == 2){
+            $account_log_where['user_money|pay_points|wallet_limsum'] = ['lt',0];
+        }
+        $order_sn && $account_log_where['order_sn'] = $order_sn;
+
+        $account_log = M('account_log')->where($account_log_where)
+            ->order('change_time desc')
+            ->select();
+        $return = [
+            'status'    =>1,
+            'msg'       =>'',
+            'result'    =>$account_log,
+
+        ];
+        return $return;
+    }
+
+
 
     /**
      * 提现记录

@@ -261,6 +261,7 @@
                             <p><span class="fircl">订单优惠：</span><span class="lascl"><em>￥</em>{$order.order_prom_amount}</span></p>
                         </if>
                         <p><span class="fircl">余额支付：</span><span class="lascl"><em>￥</em>{$order.user_money}</span></p>
+                        <p><span class="fircl">信用额度支付：</span><span class="lascl"><em>￥</em>{$order.wallet_limsum}</span></p>
                         <!-- 预售商品 start -->
                         <if condition="$order.prom_type eq 4 AND $order.paid_money gt 0" >
                             <if condition="$order.pay_status eq 1">

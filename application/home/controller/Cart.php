@@ -305,6 +305,7 @@ class Cart extends Base
         $coupon_id = input("coupon_id/d"); //  优惠券id
         $pay_points = input("pay_points/d", 0); //  使用积分
         $user_money = input("user_money/f", 0); //  使用余额
+        $wallet_limsum = input("wallet_limsum/d", 0); //  使用信用额度
         $user_note = input("user_note/s", ''); // 用户留言
         $pay_pwd = input("pay_pwd/s", ''); // 支付密码
         $goods_id = input("goods_id/d"); // 商品id
@@ -348,6 +349,7 @@ class Cart extends Base
                 ->orderPromotion()
                 ->useCouponById($coupon_id)
                 ->useUserMoney($user_money)
+                ->useWalletLimsum($wallet_limsum)
                 ->usePayPoints($pay_points);
             // 提交订单
             if ($_REQUEST['act'] == 'submit_order') {

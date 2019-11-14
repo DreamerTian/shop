@@ -56,6 +56,7 @@
     <input type="hidden" id="address_id" name="address_id" value="">
     <input type="hidden" name="pay_points" value="">
     <input type="hidden" name="user_money" value="">
+    <input type="hidden" name="wallet_limsum" value="">
     <!--立即购买才会用到-s-->
     <input type="hidden" name="action" value="{$Request.param.action}">
     <input type="hidden" name="goods_id" value="{$Request.param.goods_id}">
@@ -526,6 +527,16 @@
                     </label>
                 </p>
                 <p class="item">
+                    <label>
+                        <input id="wallet_limsum_checkbox" type="checkbox" <if condition="$user['wallet_limsum'] eq 0">disabled="disabled"</if>>
+                        使用信用额度 :
+                        <input id="wallet_limsum" type="text" disabled="disabled"
+                               onpaste="this.value=this.value.replace(/[^\d\.]/g,'')"
+                               onkeyup="this.value = /^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                        元（您当前信用额度<span>{$user['wallet_limsum']}</span>元）
+                    </label>
+                </p>
+                <p class="item">
                     <!--label>
                         <input type="checkbox" id="coupon_code_checkbox">
                         使用优惠券码 :
@@ -648,6 +659,10 @@
             <div class="list">
                 <span>积分支付：</span>
                 <em class="price" id="pointsFee">-￥0.00</em>
+            </div>
+            <div class="list">
+                <span>信用额度支付：</span>
+                <em class="price" id="xinyong">-￥0.00</em>
             </div>
         </div>
     </div>
@@ -851,6 +866,18 @@
                 $(this).parent().find("input[type='text']").attr('disabled', 'disabled');
             }
         })
+        $(document).on("click", '#wallet_limsum_checkbox', function (e) {
+            if ($(this).is(':checked')) {
+                var input = $(this).parent().find("input[type='text']");
+                input.removeAttr('disabled');
+                $("input[name='wallet_limsum']").attr('value', input.val());
+                if (input.val() != '') {
+                    ajax_order_price();
+                }
+            } else {
+                $(this).parent().find("input[type='text']").attr('disabled', 'disabled');
+            }
+        })
         //优惠券选项框选中事件
         $(document).on("click", '#coupon_code_checkbox', function (e) {
             if ($(this).is(':checked')) {
@@ -871,6 +898,12 @@
         $('#user_money').donetyping(function () {
             if ($(this).parent().find("input[type='checkbox']").is(':checked')) {
                 $("input[name='user_money']").attr('value', $(this).val());
+                ajax_order_price();
+            }
+        }, 500);
+        $('#wallet_limsum').donetyping(function () {
+            if ($(this).parent().find("input[type='checkbox']").is(':checked')) {
+                $("input[name='wallet_limsum']").attr('value', $(this).val());
                 ajax_order_price();
             }
         }, 500);
@@ -1046,6 +1079,7 @@
                 $("#balance").text('-￥' + data.result.user_money);// 余额
                 $("#pointsFee").text('-￥' + data.result.integral_money);// 积分支付
                 $("#payables").text('￥' + data.result.order_amount);// 应付
+                $("#xinyong").text('￥' + data.result.wallet_limsum);// 应付
                 $("#order_prom_amount").text('-￥' + data.result.order_prom_amount);// 订单 优惠活动
             }
         });

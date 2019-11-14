@@ -72,11 +72,11 @@
 			                            </a>
 			                        </li>
 									<li>
-										<a href="{:U('Home/User/account')}">
+										<a href="{:U('Home/User/credit')}">
 											<i class="icon-point"></i>
-											<span>可用积分</span>
+											<span>信用额度</span>
 											<em class="mu-unit">&nbsp;分</em>
-											<em class="mu-num">{$user.pay_points}</em>
+											<em class="mu-num">{$user.wallet_limsum}</em>
 											<i class="icon-ar"></i>
 										</a>
 									</li>
@@ -222,7 +222,7 @@
 			    		</div>
 			    		<div class="order-list bgno p">
 			    			<div class="ddlb-zy">
-			    				<div class="coll-coupon fl">
+			    				<div class="coll-coupon" style="width: 100%;">
 			    					<div class="coll-etl">
 										<tpshop sql="select c.*,g.shop_price from __PREFIX__goods_collect c INNER JOIN __PREFIX__goods g on c.goods_id = g.goods_id  where c.user_id = $user[user_id] order by collect_id desc limit 3" result_name="collect_result"></tpshop>
 										<div class="ddlb-tit">
@@ -241,29 +241,6 @@
 													</li>
 												</foreach>
 					    					</ul>
-					    				</div>
-			    					</div>
-			    				</div>
-			    				<div class="coll-coupon malrh fl">
-			    					<div class="coupon-etl">
-			    						<div class="ddlb-tit">
-					                       <h1>我的优惠券</h1>
-					                       <a class="u-view-all" href="{:U('Home/User/coupon')}">查看更多</a>
-					    				</div>
-					    				<div class="shop-sc-t">
-											<foreach name="$coupon" item="v">
-                                                    <div class="coupon-bgimg">
-                                                        <a href="/">
-                                                            <div class="cp-jal">
-                                                                <h1><em class="li-fh">￥</em><em>{$v.money|ceil}</em></h1>
-                                                                <span>满{$v.condition|ceil}减{$v.money|ceil}</span>
-                                                            </div>
-                                                            <div class="cp-jay">
-                                                                <span>立即使用</span>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-											</foreach>
 					    				</div>
 			    					</div>
 			    				</div>

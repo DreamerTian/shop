@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>我的信用额度-{$tpshop_config['shop_info_store_title']}</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body class="bg-f5">
+	<include file="user/header"/>
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>我的信用额度</span>
+			    </div>
+			    <div class="home-main">
+					<include file="user/menu"/>
+			    	<div class="ri-menu fr">
+						<div class="menumain p">
+							<div class="goodpiece">
+								<h1>我的信用额度</h1>
+								<!--<a href=""><span class="co_blue">积分规则</span></a>-->
+							</div>
+							<div class="shopcard myjfhg ma-to-20 p">
+								<div class="cuschan">
+									<span class="kycha"><i class="kyjf"></i>我的信用额度：</span>
+									<span class="co">{$user.wallet_limsum_z*1}</span>
+								</div>
+								<div class="cuschan">
+									<span class="kycha"><i class="dsxjf"></i>可用信用额度：</span>
+									<span class="co">{$user.wallet_limsum*1}</span>
+								</div>
+								<div class="cuschan">
+									<span class="kycha"><i class="gqjf"></i>已使用信用额度：</span>
+									<span class="co">{$user.wallet_limsum_z-$user.wallet_limsum}</span>
+								</div>
+								<div class="cuschan" style="padding-top: 40px;margin-left: 500px;width: 500px;">
+									<a class="topup-mom" href="javascript:" style="float: left;" onclick="xySyncToPm();">同步信用额度到拍卖所</a>
+									<a class="topup-mom" href="javascript:"  style="float: left;margin-left: 50px;">还款</a>
+								</div>
+							</div>
+                            <form action="" method="get" id="searchform">
+							<div class="time-sala timsearch">
+								<ul>
+									<li class="<if condition='$Request.param.type eq 1'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>1))}">信用额度累计</a></li>
+                                    <li class="<if condition='$Request.param.type eq 2'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>2))}">信用额度消费</a></li>
+								</ul>
+							</div>
+							<div class="he"></div>
+
+                            </form>
+							<div class="card-list accbala bor-acc">
+								<ul>
+									<li><a href="javascript:void(0);">积分</a></li>
+									<li><a href="javascript:void(0);">订单编号</a></li>
+									<li><a href="javascript:void(0);">详情</a></li>
+									<li><a href="javascript:void(0);">时间</a></li>
+								</ul>
+							</div>
+							<empty name="account_log">
+								<p class="ncyekjl">--暂无记录--</p>
+							</empty>
+
+							<volist name="account_log" id="log">
+                                <div class="card-list c_contan accbala-list">
+                                    <ul>
+                                        <li class="<if condition='$log[wallet_limsum] gt 0'>green_car<else/>red_car</if>">
+                                            <a href="javascript:void(0);">
+                                                <if condition="$log[wallet_limsum] gt 0">+</if>
+                                                {$log.wallet_limsum}
+                                            </a>
+                                        </li>
+                                        <li><a href="javascript:void(0);">{$log.order_sn|default='无'}</a></li>
+                                        <li><a href="javascript:void(0);">{$log.desc}</a></li>
+                                        <li><a href="javascript:void(0);">{$log.change_time|date='Y-m-d H:i',###}</a></li>
+                                    </ul>
+                                </div>
+							</volist>
+							<div class="operating fixed" id="bottom">
+								<div class="fn_page clearfix">
+									{$page}
+								</div>
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+        <!--footer-s-->
+        <div class="footer p">
+            <include file="public/footer" />
+        </div>
+        <!--footer-e-->
+		<script type="text/javascript">
+
+			var ajax_return_status = 1;
+            function xySyncToPm()
+            {
+				//请求接口同步用户信息
+				if (ajax_return_status == 0) {
+					return false;
+				}
+				ajax_return_status = 0;
+				$.ajax({
+					type : "GET",
+					url:"{:U('Home/User/sync_xy')}",
+					dataType: "json",
+					success: function(data){
+						ajax_return_status = 1;
+						if(data.status == 1 || data.status == -1){
+							layer.msg("同步成功！", {icon: 1});
+						}else{
+							layer.alert(data.msg, {icon: 2},function(index){
+								layer.close(index);
+							});
+						}
+					},
+					error:function () {
+						layer.alert('网络忙请稍后再试！', {icon: 2});
+						ajax_return_status = 1;
+					}
+				});
+            }
+		</script>
+	</body>
+</html>

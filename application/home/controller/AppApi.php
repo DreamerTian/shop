@@ -159,6 +159,10 @@ class AppApi extends Base
             $this->ajaxReturn(['status'=> -12 ,'msg' => "修改交易ID失败"]);
         }
 
+        //同步成功了给信用分
+        $config = tpCache('credit');
+        accountLog1($data['user_id'],0,$config['sync_to_gold_gave'],0,"同步到金网成功赠送信用额度");
+
         $this->ajaxReturn(['status'=> 1 ,'msg' => $result_data['result']]);
 
     }

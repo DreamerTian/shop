@@ -38,6 +38,7 @@ class System extends Base
             'push'      => '推送设置',
             'oss'       => '对象存储',
             'express'	=> '物流设置',
+            'credit'	=> '信用设置',
 //            'poster'	=> '海报设置'
         ];		
 		$this->assign('group_list',$group_list);
@@ -59,6 +60,7 @@ class System extends Base
 		return $this->fetch($inc_type);
 	}
 
+
     public function cash()
     {
         $config = tpCache('cash');
@@ -71,6 +73,8 @@ class System extends Base
         $this->assign('config',$config);//当前配置项
         return $this->fetch();
     }
+
+
 
     /**
      * 会员中心自定义

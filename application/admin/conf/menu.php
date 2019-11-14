@@ -155,10 +155,10 @@ return	array(
 			array('name'=>'提现申请','act'=>'withdrawals','op'=>'User'),
 			array('name'=>'提现设置','act'=>'cash','op'=>'System'),
 		)),
-		array('name' => '签到管理','child'=>array(
-			array('name'=>'签到记录','act'=>'signList','op'=>'User'),
-			array('name'=>'签到规则','act'=>'signRule','op'=>'User'),
-		)),
+//		array('name' => '签到管理','child'=>array(
+//			array('name'=>'签到记录','act'=>'signList','op'=>'User'),
+//			array('name'=>'签到规则','act'=>'signRule','op'=>'User'),
+//		)),
 	)),
 
 	'store'=>array('name'=>'门店','child'=>array(

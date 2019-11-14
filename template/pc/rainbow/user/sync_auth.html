@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>账号同步-{$tpshop_config['shop_info_store_title']}</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body class="bg-f5">
+    <include file="user/header" />
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>绑定账号</span>
+			    </div>
+			    <div class="home-main">
+                    <include file="user/menu" />
+			    	<div class="ri-menu fr">
+			    		<div class="menumain">
+			    			<div class="goodpiece">
+								<h1>账号同步</h1>
+								<!--<a href=""><span class="co_blue">帮助</span></a>-->
+							</div>
+				    		<div class="safe_list_set">
+				    			<ul>
+				    				<li class="sx2"><span>金网交易所</span></li>
+				    				<li class="sx1"><span><if condition="$user[systemid] eq 0">还未同步账号<else/>账号已同步</if></span></li>
+				    				<li class="sx3"><if condition="$user[systemid] eq 0">
+              							<a class="co_blue" href="javascript:;" onclick="toTran()">同步</a>
+              						<else/>
+										<a class="co_blue"  href="javascript:;">已同步</a>
+									</if>
+				    				</li>
+				    			</ul>
+								<ul>
+									<li class="sx2"><span>九子文化拍卖所</span></li>
+									<li class="sx1"><span><if condition="$user[sync_to_pm] eq 0">还未同步账号<else/>账号已同步</if></span></li>
+									<li class="sx3"><if condition="$user[sync_to_pm] eq 0">
+										<a class="co_blue" href="javascript:;" id="sync_to_pm_btn">同步</a>
+										<else/>
+										<a class="co_blue"  href="javascript:;">已同步</a>
+									</if>
+									</li>
+								</ul>
+				    		</div>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+
+		<!--footer-s-->
+        <div class="footer p">
+            <include file="public/footer" />
+        </div>
+		<!--footer-e-->
+	</body>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<script>
+		var user_id = "{$user['user_id']}";
+		var mobile = "{$user['mobile']}";
+		var name = "{$user['name']}";
+		var cardtype = "{$user['cardtype']}";
+		var idcard = "{$user['idcard']}";
+		var systemid = "{$user['systemid']}";
+		var ajax_return_status = 1;
+
+		function toTran() {
+			//先判断用户以前是否授权过 如果没有让他授权
+			if(!systemid || systemid == 0 ){
+				//弹出弹框 让用户同意 授权同步信息到金网 同步后交易所的登录密码和资金密码为jz+身份证后6位
+				layer.confirm('将同步您的用户信息至金网，是否授权此操作？同步后交易所的登录密码和资金密码为jz+身份证后6位', {
+					btn: ['确认','取消'] //按钮
+				}, function(){
+					//判断用户是否填写了身份验证信息
+					if(!mobile){
+						layer.msg('请先绑定手机号', {
+							time: 2000, //20s后自动关闭
+						});
+						window.location.href = "{:U('Home/User/info')}";
+						return false;
+					}
+					if(!name || !cardtype || !idcard){
+						layer.msg('请先认证身份信息', {
+							time: 2000, //20s后自动关闭
+						});
+						window.location.href = "{:U('Home/User/user_verify')}";
+						return false;
+					}
+					//请求接口同步用户信息
+					if (ajax_return_status == 0) {
+						return false;
+					}
+					ajax_return_status = 0;
+					$.ajax({
+						type : "POST",
+						url:"{:U('Home/AppApi/sync_user_info')}",
+						dataType: "json",
+						data: {'user_id':user_id,'name':name,'mobile':mobile,'idcard':idcard,'cardtype':cardtype},
+						success: function(data){
+							ajax_return_status = 1;
+							if(data.status == 1 || data.status == -1){
+								layer.msg("授权成功！", {icon: 1},function(){
+									window.location.href = "{:U('Home/User/out')}";
+								});
+							}else{
+								layer.alert(data.msg, {icon: 2},function(index){
+									layer.close(index);
+								});
+							}
+						},
+						error:function () {
+							layer.alert('网络忙请稍后再试！', {icon: 2});
+							ajax_return_status = 1;
+						}
+					});
+
+				}, function(){
+					layer.msg('取消授权', {
+						time: 1000, //20s后自动关闭
+					});
+				});
+			}else {
+				//跳转至理财出金页面
+				window.location.href = "{:U('Home/User/out')}";
+			}
+
+		}
+
+	</script>
+	<script>
+		$(function () {
+			$("#sync_to_pm_btn").click(function () {
+				layer.open({
+					type: 1,
+					area: ['300px', '200px'],
+					title: "密码验证",
+					closeBtn: 1,
+					shadeClose: true,
+					content: "<div>" +
+							"<form method='post' action='{:U('Home/User/sync_to_pm')}'>" +
+							"<span style='margin-left: 10px;'>登录密码：</span><input  type='password' name='pwd' style='border: 1px solid;margin-top: 20px;margin-left: 10px;'><br/><br/>" +
+							"<span style='margin-left: 10px;'>确认密码：</span><input  type='password' name='pwded' style='border: 1px solid;margin-left: 10px;'><br/><br/>" +
+							"<input type='hidden' name='mobile' value='{$user.mobile}'>"+
+							"<input type='submit' name='确认' style='margin-left: 80px;' class='btn-1'>"+
+							"</div>"+
+							"</form>"
+
+				});
+			})
+		})
+	</script>
+</html>
