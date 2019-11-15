@@ -612,12 +612,7 @@ function accountLog1($user_id, $user_money = 0, $wallet_limsum=0,$pay_points = 0
     if($wallet_limsum >= 0 && $type == 0){
         $update_data['wallet_limsum_z'] = ['exp','wallet_limsum_z+'.$wallet_limsum];
     }
-    if($user_money == 0){
-        return false;
-    }
-    if($wallet_limsum == 0){
-        return false;
-    }
+    if(($user_money+$pay_points+$distribut_money+$wallet_limsum) == 0)return false;
     $update = Db::name('users')->where("user_id = $user_id")->save($update_data);
     if($update){
         M('account_log')->add($account_log);

@@ -874,8 +874,12 @@ class User extends Base{
             }
 
             if(empty($old_bank)){
+
                 $config = tpCache('credit');
-                accountLog1($this->user_id,0,$config['binding_bank_gave'],0,"绑定银行卡赠送信用额度");
+                $res = accountLog1($user['user_id'],0,$config['binding_bank_gave'],0,"绑定银行卡赠送信用额度");
+                if(!$res){
+                    return $this->error('添加信用额度失败');
+                }
                 $this->sync_xy();
             }
 
