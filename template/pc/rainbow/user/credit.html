@@ -39,14 +39,14 @@
 								</div>
 								<div class="cuschan" style="padding-top: 40px;margin-left: 500px;width: 500px;">
 									<a class="topup-mom" href="javascript:" style="float: left;" onclick="xySyncToPm();">同步信用额度到拍卖所</a>
-									<a class="topup-mom" href="javascript:"  style="float: left;margin-left: 50px;">还款</a>
+									<a class="topup-mom" href="javascript:"  style="float: left;margin-left: 50px;" onclick="repayment();">还款</a>
 								</div>
 							</div>
                             <form action="" method="get" id="searchform">
 							<div class="time-sala timsearch">
 								<ul>
-									<li class="<if condition='$Request.param.type eq 1'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>1))}">信用额度累计</a></li>
-                                    <li class="<if condition='$Request.param.type eq 2'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>2))}">信用额度消费</a></li>
+									<li class="<if condition='$type eq 1'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>1))}">信用额度累计</a></li>
+                                    <li class="<if condition='$type eq 2'>red<else/>mal-l</if>"><a href="{:U('Home/User/credit',array('type'=>2))}">信用额度消费</a></li>
 								</ul>
 							</div>
 							<div class="he"></div>
@@ -124,6 +124,39 @@
 					}
 				});
             }
+            //还款
+            function repayment() {
+				var user_money = "{$user['user_money']}";
+
+				var yinhuan = "{$user['wallet_limsum_z']-$user['wallet_limsum']}";
+
+				if(yinhuan == 0){
+					layer.alert("亲！您没有使用信用额度，不需要还款！");
+					return false;
+				}
+
+				if(user_money <= 0){
+					layer.alert("亲！您的余额不足！请去充值！");
+					return false;
+				}
+
+				layer.open({
+					type: 1,
+					area: ['300px', '200px'],
+					title: "还款",
+					closeBtn: 1,
+					shadeClose: true,
+					content: "<div>" +
+							"<form method='post' action='{:U('Home/User/repayment')}'>" +
+							"<span style='margin-left: 10px;'>还款金额：</span><input  type='text' name='money' style='border: 1px solid;margin-top: 20px;margin-left: 10px;'><br/><br/>" +
+							"<span style='margin-left: 10px;'>支付密码：</span><input  type='password' name='paypwd' style='border: 1px solid;margin-left: 10px;'><br/><br/>" +
+							"<input type='submit' name='确认' style='margin-left: 80px;' class='btn-1'>"+
+							"</div>"+
+							"</form>"
+
+				});
+
+			}
 		</script>
 	</body>
 </html>

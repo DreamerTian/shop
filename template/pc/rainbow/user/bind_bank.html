@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>账号绑定-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/security_set.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/btn.css"/>
+    <style>
+        .col_main {
+            width: 1000px;
+            float: right;
+        }
+        .main {
+            background-color: #ffffff;
+            padding: 15px;
+        }
+        .themes_title {
+            border-bottom: 2px solid #eee;
+            height: 20px;
+            line-height: 20px;
+            padding: 0 10px 7px 5px;
+            margin-bottom: 20px;
+            position: relative;
+            margin-top: -3px;
+        }
+        .themes_title h3 {
+            color: #6c6c6c;
+            font-size: 14px;
+            font-weight: bold;
+            float:left;
+        }
+        .themes_title h2{
+            float:right;
+            font-weight:700;
+        }
+        .themes_title h2 a{
+            color:#f22e00;
+        }
+        .themes_title h2:after{
+            content:"";
+            clear:both;
+        }
+        .themes_title .blue {
+            position: absolute;
+            right: 10px;
+            bottom: 6px;
+        }
+    </style>
+</head>
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+    <div class="w1224">
+        <div class="g-crumbs">
+            <a href="{:U('Home/User/index')}">我的商城</a>
+        </div>
+        <div class="home-main">
+            <include file="user/menu"/>
+            <div class="col_main">
+                <div class="main security_passwd">
+                    <div class="themes_title">
+                        <h3>账号绑定</h3>
+                    </div>
+                    <section class="security_passwd">
+                        <div class="wrapper-3">
+                            <!--<div id="step" class="pub-step">-->
+                                <!--<div class="steps-nav fixed ">-->
+                                    <!--<p class="step-nav step-nav-1 go">1.原邮箱<i></i></p>-->
+                                    <!--<p class="step-nav step-nav-2 go">2.新邮箱<i></i></p>-->
+                                    <!--<p class="step-nav step-nav-3 go">3.完成</p>-->
+                                <!--</div>-->
+                                <form action="" method="post" onSubmit="return check_form();">
+                                    <div id="stepBlock2" class="steps-con block-02">
+                                        <div class="step-col fn-form captcha_row" data-fn-verify="">
+                                            <ul style="display: block;" class="pub-ul verify-captcha-sms">
+                                                <notempty name="user_info.bank_card">
+                                                    <li> <span class="title">原银行卡：</span>
+                                                        <div class="con verify-group">
+                                                            <input type="text" class="it-01 verify-ctrl my_chkpwd" value="{$user['bank_card']}" name="old_bank" id="old_bank" readonly
+                                                                   style="cursor: not-allowed;color:#999" />
+                    <span style="display: block" class="v-tips verify-tips" id="span_tips">
+                    	<i class="icon" id="showForPwdtip"></i>
+                        <span class="txt" id="showForPwd"></span>
+                    </span>
+                                                        </div>
+                                                    </li>
+                                                </notempty>
+                                                <li> <span class="title">新银行卡：</span>
+                                                    <div class="con verify-group">
+                                                        <input type="text" class="it-01 verify-ctrl my_chkpwd" value="" name="new_bank" id="new_bank">
+                                                        <span style="display: block;" class="v-tips verify-tips"> <i class="icon" id="rightTip"></i> <span id="errorEmail" class="txt"></span> </span> </div>
+                                                </li>
+                                                <li>
+                                                    <button class="btn_120 verify-ctrl" type="submit"> 确定 </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+    <include file="public/footer" />
+</div>
+<!--footer-e-->
+<script>
+
+    // 表单提交验证
+    function check_form()
+    {
+        var old_bank = $('#old_bank').val();
+        var new_bank = $('#new_bank').val();
+        //原邮箱不为空的情况下 验证格式
+        if(new_bank == ''){
+            layer.alert('卡号不能为空');
+        }
+        return true;
+    }
+
+</script>
+</body>
+</html>

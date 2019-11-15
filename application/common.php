@@ -590,7 +590,7 @@ function accountLog($user_id, $user_money = 0,$pay_points = 0, $desc = '',$distr
     }
 }
 
-function accountLog1($user_id, $user_money = 0, $wallet_limsum=0,$pay_points = 0,$desc = '',$distribut_money = 0,$order_id = 0 ,$order_sn = ''){
+function accountLog1($user_id, $user_money = 0, $wallet_limsum=0,$pay_points = 0,$desc = '',$type=0,$distribut_money = 0,$order_id = 0 ,$order_sn = ''){
     /* 插入帐户变动记录 */
     $account_log = array(
         'user_id'       => $user_id,
@@ -609,10 +609,15 @@ function accountLog1($user_id, $user_money = 0, $wallet_limsum=0,$pay_points = 0
         'wallet_limsum'        => ['exp','wallet_limsum+'.$wallet_limsum],
         'distribut_money'   => ['exp','distribut_money+'.$distribut_money],
     );
-    if($wallet_limsum >= 0){
-        $update_data['wallet_limsum_z'] = ['exp','wallet_limsum+'.$wallet_limsum];
+    if($wallet_limsum >= 0 && $type == 0){
+        $update_data['wallet_limsum_z'] = ['exp','wallet_limsum_z+'.$wallet_limsum];
     }
-    if(($user_money+$pay_points+$distribut_money+$wallet_limsum) == 0)return false;
+    if($user_money == 0){
+        return false;
+    }
+    if($wallet_limsum == 0){
+        return false;
+    }
     $update = Db::name('users')->where("user_id = $user_id")->save($update_data);
     if($update){
         M('account_log')->add($account_log);

@@ -528,7 +528,7 @@
                 </p>
                 <p class="item">
                     <label>
-                        <input id="wallet_limsum_checkbox" type="checkbox" <if condition="$user['wallet_limsum'] eq 0">disabled="disabled"</if>>
+                        <input id="wallet_limsum_checkbox" type="checkbox" <if condition="$user['wallet_limsum'] eq 0 or $credit eq 0">disabled="disabled"</if>>
                         使用信用额度 :
                         <input id="wallet_limsum" type="text" disabled="disabled"
                                onpaste="this.value=this.value.replace(/[^\d\.]/g,'')"

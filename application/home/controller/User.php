@@ -124,13 +124,14 @@ class User extends Base{
      */
     public function credit()
     {
-        $user = session('user');
+        $user = Db::name('users')->where(['user_id'=>$this->user_id])->find();
 
         $type = I('type',1);
         $logic = new UsersLogic();
         $data = $logic->get_account_log($this->user_id,$type);
         $account_log = $data['result'];
         $this->assign('user',$user);
+        $this->assign('type',$type);
         $this->assign('page',$data['show']);
         $this->assign('account_log',$account_log);
 
@@ -142,7 +143,7 @@ class User extends Base{
      * */
     public function sync_xy()
     {
-        $user = session('user');
+        $user = Db::name('users')->where(['user_id'=>$this->user_id])->find();
 
         $url = "http://paimai.jzwhsc.com/index.php/home/api/sync_xy";
 
@@ -153,6 +154,50 @@ class User extends Base{
         $res = httpRequest($url,"POST",$data);
 
         echo $res;
+    }
+
+    /**
+     *  还款
+     * */
+    public function repayment()
+    {
+        $user = Db::name('users')->where(['user_id'=>$this->user_id])->find();
+
+        $money = I('money');
+
+        $payPsw = I('paypwd');
+
+        if(empty($money)){
+            $this->error( "请输入还款金额");
+        }
+        if($money > $user['user_money']){
+            $this->error("亲！账号余额不足！请充值！");
+        }
+        if ($user['is_lock'] == 1) {
+            $this->error("账号异常已被锁定，不能使用余额支付！");
+        }
+        if (empty($user['paypwd'])) {
+            $this->error("请先设置支付密码");
+        }
+        if (empty($payPsw)) {
+            $this->error("请输入支付密码");
+        }
+        if ($payPsw !== $user['paypwd'] && encrypt($payPsw) !== $user['paypwd']) {
+            $this->error('支付密码错误');
+        }
+
+        $res1 = accountLog1($this->user_id,(0-$money),0,0,'还款扣除');
+        $res2 = accountLog1($this->user_id,0,$money,0,'还款',1);
+
+        if($res1 != false && $res2 != false){
+
+            $this->sync_xy();
+
+            $this->success('还款成功');
+        }
+
+        $this->error('还款失败');
+
     }
 
     /*
@@ -502,6 +547,7 @@ class User extends Base{
             if($user_info['email_validated'] != 1 && empty($old_email)){
                 $config = tpCache('credit');
                 accountLog1($this->user_id,0,$config['email_gave'],0,"绑定邮箱赠送信用额度");
+                $this->sync_xy();
             }
 
             $this->success('绑定成功',U('Home/User/index'));
@@ -801,7 +847,43 @@ class User extends Base{
                 $lists[] = $val;
             }
         }
+        $user = session('user');
+
+        $is_bind_bank = empty($user['bank_card']) ? 0 : 1;
+
+        $this->assign('is_bind_bank', $is_bind_bank);
         $this->assign('lists', $lists);
+
+        return $this->fetch();
+    }
+
+    /**
+     *  绑定银行卡
+     * */
+    public function bind_bank()
+    {
+        $user = session('user');
+        if(IS_POST){
+            $old_bank = I('post.old_bank');
+            $new_bank = I('post.new_bank');
+
+            $result = Db::name('users')->where('user_id',$this->user_id)->setField('bank_card',$new_bank);
+
+            if(!$result){
+                return $this->error('绑定失败');
+            }
+
+            if(empty($old_bank)){
+                $config = tpCache('credit');
+                accountLog1($this->user_id,0,$config['binding_bank_gave'],0,"绑定银行卡赠送信用额度");
+                $this->sync_xy();
+            }
+
+            return $this->success("绑定成功");
+
+        }
+
+        $this->assign('user',$user);
         return $this->fetch();
     }
 
@@ -834,6 +916,7 @@ class User extends Base{
         if($result2pm_arr['status'] == 1){
             Db::name('users')->where("user_id", $this->user_id)->update(['sync_to_pm'=>1]);
             accountLog1($this->user_id,0,$config['sync_to_pm_gave'],0,"会员成功同步到拍卖所赠送信用额度");
+            $this->sync_xy();
 
             $this->success('账号同步成功');
         }else{
@@ -1452,6 +1535,7 @@ class User extends Base{
             if(empty($user_info['idcard'])){
                 $config = tpCache('credit');
                 accountLog1($this->user_id,0,$config['real_name_gave'],0,"实名认证赠送信用额度");
+                $this->sync_xy();
             }
 
             $this->success("操作成功");

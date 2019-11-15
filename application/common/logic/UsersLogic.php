@@ -467,8 +467,7 @@ class UsersLogic extends Model
             return array('status'=>-1,'msg'=>'注册失败');
         }
         //注册成功给予 初始信用额度
-        $config = tpCache('credit');
-        accountLog1($user_id,0,$config['initial_gave'],0,"会员注册成功赠送信用额度");
+
         //把拍卖所的也注册了
         $url = "http://paimai.jzwhsc.com/index.php/login/register";
         $post_data['registerType'] = 'mobile';
@@ -480,10 +479,16 @@ class UsersLogic extends Model
 
         $result2pm_arr = json_decode($result2pm,1);
 
+        $config = tpCache('credit');
+        accountLog1($user_id,0,$config['initial_gave'],0,"会员注册成功赠送信用额度");
+
         if($result2pm_arr['status'] == 1){
             Db::name('users')->where("user_id", $user_id)->update(['sync_to_pm'=>1]);
             accountLog1($user_id,0,$config['sync_to_pm_gave'],0,"会员注册成功并同步到拍卖所赠送信用额度");
         }
+
+        $user = new \app\home\controller\User();
+        $user->sync_xy();
 
         // 会员注册赠送积分
         $isRegIntegral = tpCache('integral.is_reg_integral');

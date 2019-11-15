@@ -258,6 +258,8 @@ class Cart extends Base
         $this->assign('userCartCouponList', $userCartCouponList);  //优惠券，用able判断是否可用
         $this->assign('cartGoodsTotalNum', $cartGoodsTotalNum);
         $this->assign('cartList', $cartList['cartList']); // 购物车的商品
+        $config = tpCache('credit');
+        $this->assign('credit',$config['credit_score_enable']);
 //        halt($cartList['cartList'][0]['combination_cart']);
         $this->assign('cartPriceInfo', $cartPriceInfo);//商品优惠总价
         return $this->fetch();

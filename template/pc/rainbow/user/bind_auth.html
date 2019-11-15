@@ -26,6 +26,14 @@
 								<!--<a href=""><span class="co_blue">帮助</span></a>-->
 							</div>
 				    		<div class="safe_list_set">
+								<ul>
+									<li class="sx2"><span>银行卡</span></li>
+									<li class="sx1"><span><if condition="$is_bind_bank eq 0">还未绑定账号<else/>账号已绑定</if></span></li>
+									<li class="sx3"><if condition="$is_bind_bank eq 0">
+										<a class="co_blue" href="{:U('Home/user/bind_bank')}">绑定</a>
+										<else/><a class="co_blue" href="javascript:;">更换绑定</a></if>
+									</li>
+								</ul>
 				    			<volist name="lists" id="list">
 				    			<ul>
 				    				<li class="sx2"><span>{$list.name}</span></li>
