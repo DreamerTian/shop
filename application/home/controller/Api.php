@@ -66,10 +66,10 @@ class Api extends Base
 
         switch ($type) {
             case 'add':
-                $result = accountLog1($user_info['user_id'],0,$wallet_limsum,0,'');
+                $result = accountLog1($user_info['user_id'],0,$wallet_limsum,0,'',1);
                 break;
             case 'minus':
-                $result = accountLog1($user_info['user_id'],0,(0-$wallet_limsum),0,'');
+                $result = accountLog1($user_info['user_id'],0,(0-$wallet_limsum),0,'',1);
                 break;
             default:
                 $result = false;
