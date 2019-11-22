@@ -157,6 +157,25 @@ class User extends Base{
     }
 
     /**
+     *  信用额度变动
+     */
+    public function change_xy($money,$type)
+    {
+        $user = Db::name('users')->where(['user_id'=>$this->user_id])->find();
+
+        $url = "http://paimai.jzwhsc.com/index.php/home/api/change_xy";
+
+        $data['mobile'] = $user['mobile'];
+        $data['type'] = $type;
+        $data['wallet_limsum'] = $money;
+        $data['wallet_limsum_z'] = $user['wallet_limsum_z'];
+
+        $res = httpRequest($url,"POST",$data);
+
+        echo $res;
+    }
+
+    /**
      *  还款
      * */
     public function repayment()
@@ -191,7 +210,7 @@ class User extends Base{
 
         if($res1 != false && $res2 != false){
 
-            $this->sync_xy();
+            $this->change_xy($money,'add');
 
             $this->success('还款成功');
         }
@@ -547,7 +566,7 @@ class User extends Base{
             if($user_info['email_validated'] != 1 && empty($old_email)){
                 $config = tpCache('credit');
                 accountLog1($this->user_id,0,$config['email_gave'],0,"绑定邮箱赠送信用额度");
-                $this->sync_xy();
+                $this->change_xy($config['email_gave'],'add');
             }
 
             $this->success('绑定成功',U('Home/User/index'));
@@ -880,7 +899,7 @@ class User extends Base{
                 if(!$res){
                     return $this->error('添加信用额度失败');
                 }
-                $this->sync_xy();
+                $this->change_xy($config['binding_bank_gave'],'add');
             }
 
             return $this->success("绑定成功");
@@ -920,7 +939,7 @@ class User extends Base{
         if($result2pm_arr['status'] == 1){
             Db::name('users')->where("user_id", $this->user_id)->update(['sync_to_pm'=>1]);
             accountLog1($this->user_id,0,$config['sync_to_pm_gave'],0,"会员成功同步到拍卖所赠送信用额度");
-            $this->sync_xy();
+            $this->change_xy($config['sync_to_pm_gave'],'add');
 
             $this->success('账号同步成功');
         }else{
@@ -1539,7 +1558,7 @@ class User extends Base{
             if(empty($user_info['idcard'])){
                 $config = tpCache('credit');
                 accountLog1($this->user_id,0,$config['real_name_gave'],0,"实名认证赠送信用额度");
-                $this->sync_xy();
+                $this->change_xy($config['real_name_gave'],'add');
             }
 
             $this->success("操作成功");

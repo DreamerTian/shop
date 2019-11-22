@@ -36,6 +36,58 @@ class Api extends Base
         session('user');
     }
 
+    /**
+     * 接受拍卖行那边的信用额度同步请求
+     */
+    public function change_xy()
+    {
+        $mobile = I('mobile');
+
+        $user_info = Db::name('users')->where('mobile',$mobile)->find();
+
+        if(empty($user_info)){
+            $res = array('status' => 0, 'msg' => '用户不存在', 'result' => []);
+            exit(json_encode($res));
+        }
+
+        $wallet_limsum = I('wallet_limsum');
+
+        if($wallet_limsum == 0){
+            $res = array('status' => 0, 'msg' => '同步失败，信用额度不能为空', 'result' => []);
+            exit(json_encode($res));
+        }
+
+        $type = I('type','');
+
+        if(empty($type)){
+            $res = array('status' => 0, 'msg' => '同步失败，变动类型不能为空', 'result' => []);
+            exit(json_encode($res));
+        }
+
+        switch ($type) {
+            case 'add':
+                $result = accountLog1($user_info['user_id'],0,$wallet_limsum,0,'');
+                break;
+            case 'minus':
+                $result = accountLog1($user_info['user_id'],0,(0-$wallet_limsum),0,'');
+                break;
+            default:
+                $result = false;
+                break;
+        }
+
+        if($result == false){
+            $res = array('status' => 0, 'msg' => '同步失败', 'result' => []);
+            exit(json_encode($res));
+        }
+
+        $res = array('status' => 1, 'msg' => '同步成功', 'result' => []);
+        exit(json_encode($res));
+
+    }
+
+
+
     /*
      * 获取地区
      */

@@ -432,6 +432,11 @@ class PlaceOrder
                 'order_id'=>$order['order_id'],
             ];
             Db::name('account_log')->insert($accountLogData);
+            if($this->pay->getWalletLimsum() > 0){
+                $user = new \app\home\controller\User();
+
+                $user->change_xy($this->pay->getWalletLimsum(),'minus');
+            }
         }
     }
     /**
