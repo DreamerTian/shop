@@ -182,6 +182,7 @@ class Cart extends MobileBase {
         $coupon_id = input("coupon_id/d"); //  优惠券id
         $pay_points = input("pay_points/d", 0); //  使用积分
         $user_money = input("user_money/f", 0); //  使用余额
+        $wallet_limsum = input("wallet_limsum/f", 0); //  使用余额
         $user_note = input("user_note/s", ''); // 用户留言
         $pay_pwd = input("pay_pwd/s", ''); // 支付密码
         $goods_id = input("goods_id/d"); // 商品id
@@ -219,13 +220,28 @@ class Cart extends MobileBase {
                 $cartLogic->checkStockCartList($userCartList);
                 $pay->payCart($userCartList);
             }
-            $pay->setUserId($this->user_id)->setShopById($shop_id)->delivery($address['district'])->orderPromotion()
-                ->useCouponById($coupon_id)->useUserMoney($user_money)->usePayPoints($pay_points,false,'mobile');
+            $pay->setUserId($this->user_id)
+                ->setShopById($shop_id)
+                ->delivery($address['district'])
+                ->orderPromotion()
+                ->useCouponById($coupon_id)
+                ->useUserMoney($user_money)
+                ->useWalletLimsum($wallet_limsum)
+                ->usePayPoints($pay_points,false,'mobile');
             // 提交订单
             if ($_REQUEST['act'] == 'submit_order') {
                 $placeOrder = new PlaceOrder($pay);
-                $placeOrder->setMobile($mobile)->setUserAddress($address)->setConsignee($consignee)->setInvoiceTitle($invoice_title)
-                    ->setUserNote($user_note)->setTaxpayer($taxpayer)->setInvoiceDesc($invoice_desc)->setPayPsw($pay_pwd)->setTakeTime($take_time)->addNormalOrder();
+                $placeOrder
+                    ->setMobile($mobile)
+                    ->setUserAddress($address)
+                    ->setConsignee($consignee)
+                    ->setInvoiceTitle($invoice_title)
+                    ->setUserNote($user_note)
+                    ->setTaxpayer($taxpayer)
+                    ->setInvoiceDesc($invoice_desc)
+                    ->setPayPsw($pay_pwd)
+                    ->setTakeTime($take_time)
+                    ->addNormalOrder();
                 $cartLogic->clear();
                 $order = $placeOrder->getOrder();
                 $this->ajaxReturn(['status' => 1, 'msg' => '提交订单成功', 'result' => $order['order_sn']]);

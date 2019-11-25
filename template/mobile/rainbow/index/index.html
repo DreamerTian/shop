@@ -75,22 +75,29 @@
                     <span>积分商城</span>
                 </span>
             </a>
-            <a href="{:U('Goods/brandstreet')}">
+            <!--<a href="{:U('Goods/brandstreet')}">
                 <span>
                     <img src="__STATIC__/images/icon_07.png" alt="品牌街" /><br />
                     <span>品牌街</span>
                 </span>
-            </a>
-            <a href="{:U('Activity/promote_goods')}">
+            </a>-->
+            <!--<a href="{:U('Activity/promote_goods')}">
                 <span>
                     <img src="__STATIC__/images/icon_09.png" alt="优惠活动" /><br />
                     <span>优惠活动</span>
                 </span>
-            </a>
-            <a href="{:U('Activity/group_list')}">
+            </a>-->
+            <!--<a href="{:U('Activity/group_list')}">
                 <span>
                     <img src="__STATIC__/images/icon_15.png" alt="团购" /><br />
                     <span>团购</span>
+                </span>
+            </a>-->
+            <!--<a href="shopcar.html">-->
+            <a href="{:U('Cart/index')}">
+                <span>
+                    <img src="__STATIC__/images/icon_17.png" alt="购物车" /><br />
+                    <span>购物车</span>
                 </span>
             </a>
             <a href="{:U('Order/order_list')}">
@@ -99,26 +106,19 @@
                     <span>我的订单</span>
                 </span>
             </a>
-            <!--<a href="shopcar.html">-->
-            <a href="{:U('Cart/index')}">
-                <span>
-                    <img src="__STATIC__/images/icon_17.png" alt="购物车" /><br />
-                    <span>购物车</span>
-                </span>
-            </a>
             <!--<a href="my.html">-->
-            <a href="javascript:void(0);" onclick="alert('请购买高级版支持哦!');">
+            <!--<a href="javascript:void(0);" onclick="alert('请购买高级版支持哦!');">
                 <span>
                     <img src="__STATIC__/images/icon_19.png" alt="个人中心" /><br />
                     <span>我要拼团</span>
                 </span>
-            </a>
+            </a>-->
         </nav>
     </div>
     <!--菜单-end-->
 
     <!--秒杀-start-->
-    <div class="floor secondkill">
+    <!--<div class="floor secondkill">
         <div class="content">
             <div class="time p">
                 <div class="djs lightning fl">
@@ -137,7 +137,7 @@
                     <div style="text-align: center;">暂无抢购商品。。。。</div>
                 </if>
                 <foreach name="flash_sale_list" item="v">
-                    <!--<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$v[goods_id],'item_id'=>$v[item_id]))}">-->
+                    &lt;!&ndash;<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$v[goods_id],'item_id'=>$v[item_id]))}">&ndash;&gt;
                     <a href="{:U('Mobile/Activity/flash_sale_list')}">
                         <div class="timerBox shopnum">
                             <img src="{$v[goods_id]|goods_thum_images=200,200}"/>
@@ -147,7 +147,7 @@
                 </foreach>
             </div>
         </div>
-    </div>
+    </div>-->
     <!--秒杀-end-->
 
     <!--广告位-start-->

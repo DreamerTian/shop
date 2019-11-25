@@ -62,8 +62,8 @@ class User extends Base{
         }
 
         //用户中心面包屑导航
-        $navigate_user = navigate_user();
-        $this->assign('navigate_user',$navigate_user);
+        /*$navigate_user = navigate_user();
+        $this->assign('navigate_user',$navigate_user);*/
     }
 
     public function test(){
@@ -172,7 +172,7 @@ class User extends Base{
 
         $res = httpRequest($url,"POST",$data);
 
-        echo $res;
+        // echo $res;
     }
 
     /**

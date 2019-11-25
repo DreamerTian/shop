@@ -14,6 +14,7 @@
             <input type="hidden" name="address_id" value="" autocomplete="off"/> <!--收货地址id-->
             <input type="hidden" name="pay_points" value="" autocomplete="off">
             <input type="hidden" name="user_money" value="" autocomplete="off">
+            <input type="hidden" name="wallet_limsum" value="" autocomplete="off">
             <input type="hidden" name="auth_code" value="{$Think.config.AUTH_CODE}"/>
             <!--立即购买才会用到-s-->
             <input type="hidden" name="action" value="{$Request.param.action}">
@@ -203,6 +204,33 @@
                     </div>
                 </div>
                 <!--使用余额-e-->
+                <!--使用信用额度-s-->
+                <div class="invoice list7">
+                    <div class="myorder p">
+                        <div class="content30">
+                            <a class="remain" href="javascript:void(0);">
+                                <div class="order">
+                                    <div class="fl">
+                                        <span>使用信用额度</span>
+
+                                        <p>额度：￥{$user['wallet_limsum']}</p>
+                                    </div>
+                                    <div class="fr z-toggle-btn">
+                                        <label class="z-toggle z-toggle-royal">
+                                            <input type="checkbox" id="wallet_limsum" value="{$user['wallet_limsum']}"/>
+
+                                            <div class="z-tarck">
+                                                <div class="z-handle">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--使用信用额度-e-->
                 <div class="invoice list7">
                     <div class="myorder p">
                         <div class="content30">
@@ -251,7 +279,7 @@
         </div>
         <!--支持配送,发票信息-s-->
         <!--优惠券-s-->
-        <div class="information_dr ma-to-20" id="coupon_div">
+        <!--<div class="information_dr ma-to-20" id="coupon_div">
             <div class="maleri30">
                 <div class="invoice list7">
                     <div class="myorder p">
@@ -270,7 +298,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <!--优惠券-e-->
         <!--卖家留言-s-->
         <div class="customer-messa">
@@ -315,14 +343,14 @@
                             <a> ￥<span id="postFee">0</span>元</a>
                         </div>
                     </div>
-                    <div class="p z-monry-cont">
+                    <!--<div class="p z-monry-cont">
                         <div class="fl">
                             优惠券抵扣
                         </div>
                         <div class="fr">
                             <a> ￥<span id="couponFee">0</span>元</a>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="p z-monry-cont">
                         <div class="fl">
                             积分抵扣
@@ -337,6 +365,14 @@
                         </div>
                         <div class="fr">
                             <a> ￥<span id="balance">0</span>元</a>
+                        </div>
+                    </div>
+                    <div class="p z-monry-cont">
+                        <div class="fl">
+                            信用额度抵扣
+                        </div>
+                        <div class="fr">
+                            <a> ￥<span id="wallet_limsums">0</span>元</a>
                         </div>
                     </div>
                 </div>
@@ -355,9 +391,9 @@
         </div>
         <!--提交订单-e-->
     </div>
-    <div id="couponList" style="display: none">
+    <!--<div id="couponList" style="display: none">
         <div class="c_uscoupon_bgs"></div>
-        <!--优惠券弹窗-s-->
+        &lt;!&ndash;优惠券弹窗-s&ndash;&gt;
         <div class="chooseebitcard newchoosecar coupongg" style="bottom: 0;" >
             <div class="choose-titr">
                 <span>优惠券<em id="cl"></em></span>
@@ -399,8 +435,8 @@
                 </div>
             </div>
         </div>
-        <!--优惠券弹窗-e-->
-    </div>
+        &lt;!&ndash;优惠券弹窗-e&ndash;&gt;
+    </div>-->
     <div id="shopList" style="display: none">
         <!--选择提货人弹窗 s-->
         <div class="pop-prkage-wraps p pop-prkage-ziti">
@@ -1051,7 +1087,7 @@
     //积分余额密码
     $(function () {
         //选择使用积分和余额
-        $(document).on('click', '#pay_points,#user_money', function () {
+        $(document).on('click', '#pay_points,#user_money,#wallet_limsum', function () {
             pay_pwd_view();
             ajax_order_price();
         });
@@ -1083,6 +1119,7 @@
     function pay_pwd_view() {
         var user_money = $('#user_money');
         var pay_points = $('#pay_points');
+        var wallet_limsum = $('#wallet_limsum');
         if (user_money.is(':checked')) {
             $("input[name='user_money']").val(user_money.val());
         }else{
@@ -1093,7 +1130,14 @@
         }else{
             $("input[name='pay_points']").val('');
         }
-        if (user_money.is(':checked') || pay_points.is(':checked')) {
+
+        if (wallet_limsum.is(':checked')) {
+            $("input[name='wallet_limsum']").val(wallet_limsum.val());
+        }else{
+            $("input[name='wallet_limsum']").val('');
+        }
+
+        if (user_money.is(':checked') || pay_points.is(':checked') || wallet_limsum.is(':checked')) {
             $('#paypwd_view').show();
         } else {
             $('#paypwd_view').hide();
@@ -1166,6 +1210,9 @@
         if(typeof(data.result.user_money) != 'undefined'){
             $("#balance").text(data.result.user_money.toFixed(2));// 余额
         }
+        if(typeof(data.result.wallet_limsum) != 'undefined'){
+            $("#wallet_limsums").text(data.result.wallet_limsum.toFixed(2));// 余额
+        }
         if(typeof(data.result.integral_money) != 'undefined'){
             $("#pointsFee").text(data.result.integral_money.toFixed(2));// 积分支付
         }
@@ -1230,6 +1277,7 @@
                     $("#couponFee").text(data.result.coupon_price);// 优惠券
                 }
                 $("#balance").text(data.result.user_money);// 余额
+                $("#wallet_limsums").text(data.result.wallet_limsum);// 信用额度
                 $("#pointsFee").text(data.result.integral_money);// 积分支付
                 $("#payables").text(data.result.order_amount);// 应付
                 $("#order_prom_amount").text(data.result.order_prom_amount);// 订单 优惠活动
